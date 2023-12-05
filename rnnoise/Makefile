@@ -10,10 +10,13 @@
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU Affero General Public License, version 3 for more details.
 #
-# You should have received a copy of the GNU Affero General Public License, 
+# You should have received a copy of the GNU Affero General Public License,
 # version 3 along with openMHA.  If not, see <http://www.gnu.org/licenses/>.
 
 include ../plugin.mk
+#CFLAGS+="-std=gnu99"
+#$(BUILD_DIR)/rnndenoise$(PLUGIN_EXT): $(BUILD_DIR)/celt_lpc.o $(BUILD_DIR)/denoise.o $(BUILD_DIR)/kiss_fft.o $(BUILD_DIR)/pitch.o $(BUILD_DIR)/rnn_data.o $(BUILD_DIR)/rnn_reader.o $(BUILD_DIR)/rnn.o
+LDFLAGS += librnnoise.a
 
 # Local Variables:
 # compile-command: "make"

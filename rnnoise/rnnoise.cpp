@@ -23,7 +23,7 @@
 
 #include "mha_plugin.hh"
 #include "rnnoise.h"
-
+#define FRAME_SIZE 480
 /** This C++ class implements the simplest example plugin for the
  * step-by-step tutorial.  It inherits from MHAPlugin::plugin_t for
  * correct integration in the configuration language interface.  */
@@ -33,12 +33,19 @@ public:
    * arguments, but it does not have to use them. However, the base
    * class has to be initialized. */
   rnnoise_t(algo_comm_t & ac,
-            const std::string & chain_name,
+            //const std::string & chain_name,
             const std::string & algo_name)
       : MHAPlugin::plugin_t<int>("",ac)
   {/* Do nothing in constructor */
-    st = rnnoise_create(NULL);
+      //(void)chain_name;
+      (void)algo_name;
+    //st = rnnoise_create(NULL);
   }
+  // rnnoise_t(algo_comm_t & ac, const std::string & configured_name)
+  //     : MHAPlugin::plugin_t<int>("",ac)
+  // {(void)configured_name;/* ignore 2nd parameter */
+  //     st = rnnoise_create(NULL);
+  //   }
 
   /* rnnoise related variables */
   DenoiseState *st;
@@ -63,6 +70,7 @@ public:
     if (signal_info.channels < 1)
       throw MHA_Error(__FILE__,__LINE__,
                       "This plugin requires at least one input channel.");
+  st = rnnoise_create(NULL);
   }
 
   /** Signal processing performed by the plugin.
@@ -86,9 +94,34 @@ public:
     //   // Waveform channels are stored interleaved.
     //   signal->buf[signal->num_channels * frame + channel] *= factor;
     // }
-    rnnoise_process_frame(st, signal->buf, signal->buf);
+    //rnnoise_process_frame(st, signal->buf, signal->buf);
     // Algorithms may process data in-place and return the input signal
     // structure as their output signal:
+
+
+    unsigned int frame;
+    unsigned int channel;
+    float temp_in_frame[FRAME_SIZE];
+    float temp_out_frame[FRAME_SIZE];
+    auto t1 = std::chrono::high_resolution_clock::now();
+    //float before;
+    //float after;
+    for(channel=0; channel < signal->num_channels; channel++)
+    {
+      for(frame = 0; frame < signal->num_frames; frame++)
+      {
+        temp_in_frame[frame] = static_cast<float>(value(signal, frame, channel) * 32757);
+      }
+      rnnoise_process_frame(st, temp_out_frame, temp_in_frame);
+      for(frame = 0; frame < signal->num_frames; frame++)
+      {
+        value(signal, frame, channel) = static_cast<double>(temp_out_frame[frame]/32757);
+      }
+    }
+    auto t2 = std::chrono::high_resolution_clock::now();
+    auto diff = std::chrono::duration_cast<std::chrono::microseconds>(t2 - t1).count();
+    mha_debug("Processing duration: %lld\n", diff);
+
     return signal;
   }
 };
