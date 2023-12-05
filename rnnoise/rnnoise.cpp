@@ -103,7 +103,7 @@ public:
     unsigned int channel;
     float temp_in_frame[FRAME_SIZE];
     float temp_out_frame[FRAME_SIZE];
-    auto t1 = std::chrono::high_resolution_clock::now();
+    //auto t1 = std::chrono::high_resolution_clock::now();
     //float before;
     //float after;
     for(channel=0; channel < signal->num_channels; channel++)
@@ -118,9 +118,9 @@ public:
         value(signal, frame, channel) = static_cast<double>(temp_out_frame[frame]/32757);
       }
     }
-    auto t2 = std::chrono::high_resolution_clock::now();
-    auto diff = std::chrono::duration_cast<std::chrono::microseconds>(t2 - t1).count();
-    mha_debug("Processing duration: %lld\n", diff);
+    //auto t2 = std::chrono::high_resolution_clock::now();
+    //auto diff = std::chrono::duration_cast<std::chrono::microseconds>(t2 - t1).count();
+    //mha_debug("Processing duration: %lld\n", diff);
 
     return signal;
   }
