@@ -11,7 +11,7 @@ Follow these steps in order to create an image and run an example.
 
 Upon getting `#` prompt
 
-- `cd /home/openMHA/examples/`
+- `cd /home/openMHA/examples/32-rnnoise/`
 - `mha --interactive`
 - `?read:rnnoise.cfg`
 - `cmd=start`
