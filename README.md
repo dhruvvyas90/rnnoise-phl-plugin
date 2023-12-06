@@ -22,6 +22,6 @@ You can see the processed file ready after these steps.
 ## Current limitations
 
 - This plugin uses `librnnoise` and hence can only process audio files with 44100 Hz sampling rate.
-- The plugin processes 480 frames at a time due limitation of this library.
+- The plugin processes 480 frames at a time due to the limitation of this library.
 
 
